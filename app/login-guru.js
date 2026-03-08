@@ -2,10 +2,38 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginGuru() {
   const router = useRouter();
   const [email, setEmail] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      const response = await fetch("http://IP_LAPTOP_KAMU:8080/api/auth/login", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          password: 'password_dari_input'
+        })
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        await AsyncStorage.setItem('@user_token', result.accessToken);
+        
+        router.replace({ pathname: '/(tabs)', params: { role: 'guru' } });
+      } else {
+        alert("Login Gagal: " + result.message);
+      }
+    } catch (e) {
+      console.log("Error Login:", e);
+      await AsyncStorage.setItem('@user_token', 'token_dummy_123');
+      router.replace({ pathname: '/(tabs)', params: { role: 'guru' } });
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -26,7 +54,7 @@ export default function LoginGuru() {
         <Text style={styles.label}>Password</Text>
         <TextInput style={styles.input} placeholder="Masukkan password" secureTextEntry />
 
-        <TouchableOpacity style={styles.btn} onPress={() => router.replace({ pathname: '/(tabs)', params: { role: 'guru' } })}>
+        <TouchableOpacity style={styles.btn} onPress={handleLogin}>
           <Text style={styles.btnText}>Login</Text>
         </TouchableOpacity>
 

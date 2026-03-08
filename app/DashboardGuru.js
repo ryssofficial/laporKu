@@ -2,17 +2,18 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRouter } from 'expo-router';
-import {LoginGuru} from '../app/login-guru';
+import {LoginGuru} from './login-guru';
 
 export default function DashboardGuru() {
     const router = useRouter();
     const menuGuru = [
-        { name: 'Audit Tugas', icon: 'rule' },
-        { name: 'Validasi Absensi', icon: 'fact-check' },
-        { name: 'Jadwal Mengajar', icon: 'calendar-today' },
-        { name: 'Seleksi Mapel', icon: 'list-alt' },
-        { name: 'Validasi Tabungan', icon: 'payments' },
-        { name: 'Daftar Siswa', icon: 'people' },
+        { name: 'Audit Tugas', icon: 'rule', path: 'auditTugas', path: '/auditTugas' },
+        { name: 'Validasi Absensi', icon: 'fact-check', path: '/validasiAbsensi'},
+        { name: 'Jadwal Mengajar', icon: 'calendar-today', path: '/jadwalMengajar' },
+        { name: 'Seleksi Mapel', icon: 'list-alt', path: '/seleksiMapel' },
+        { name: 'Validasi Tabungan', icon: 'payments', path: '/validasiTabungan' },
+        { name: 'Daftar Siswa', icon: 'people', path: '/daftarSiswa' },
+        
     ];
 
     return (
@@ -25,7 +26,7 @@ export default function DashboardGuru() {
 
         <View style={styles.menuGrid}>
             {menuGuru.map((item, index) => (
-            <TouchableOpacity key={index} style={styles.menuCard}>
+            <TouchableOpacity key={index} style={styles.menuCard} onPress={() => { router.push(item.path) }}>
                 <MaterialIcons name={item.icon} size={30} color="#ff0000" />
                 <Text style={styles.menuLabel}>{item.name}</Text>
             </TouchableOpacity>

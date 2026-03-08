@@ -15,7 +15,7 @@ export default function LoginSiswa() {
         <Text style={styles.subtitle}>Masukkan NIS dan password anda</Text>
 
         <Text style={styles.label}>NIS (Nomor Induk Siswa)</Text>
-        <TextInput style={styles.input} placeholder="Masukkan NIS anda" value={nis} onChangeText={setNis} />
+        <TextInput keyboardType='numeric' style={styles.input} placeholder="Masukkan NIS anda" value={nis} onChangeText={setNis} />
 
         <Text style={styles.label}>Password</Text>
         <TextInput style={styles.input} placeholder="Masukkan password" secureTextEntry />

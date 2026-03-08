@@ -1,13 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useRouter } from 'expo-router';
 
 export default function DashboardSiswa() {
+    const router = useRouter();
     const menuSiswa = [
-        { name: 'Tabungan', icon: 'account-balance-wallet' },
-        { name: 'Nilai', icon: 'assignment' },
-        { name: 'Jadwal', icon: 'event' },
-        { name: 'Absensi', icon: 'check-circle' },
+        { name: 'Tabungan', icon: 'account-balance-wallet',  path: '/tabungan'},
+        { name: 'Nilai', icon: 'assignment', path: '/nilai'},
+        { name: 'Jadwal', icon: 'event', path: '/jadwal' },
+        { name: 'Absensi', icon: 'check-circle', path: '/absensi' },
     ];
 
     return (
@@ -20,7 +22,7 @@ export default function DashboardSiswa() {
 
             <View style={styles.menuGrid}>
                 {menuSiswa.map((item, index) => (
-                <TouchableOpacity key={index} style={styles.menuCard}>
+                <TouchableOpacity key={index} style={styles.menuCard} onPress={() => { router.push(item.path) }}>
                     <MaterialIcons name={item.icon} size={32} color="#ff0000" />
                     <Text style={styles.menuLabel}>{item.name}</Text>
                 </TouchableOpacity>
