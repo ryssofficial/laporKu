@@ -1,37 +1,27 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { loginAUTH, simpanToken, hapusToken } from '../Logic/loginLogic'; 
 
 export default function LoginGuru() {
   const router = useRouter();
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://IP_LAPTOP_KAMU:8080/api/auth/login", {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: email,
-          password: 'password_dari_input'
-        })
-      });
+      const result = await loginAUTH(); 
 
-      const result = await response.json();
-
-      if (response.ok) {
-        await AsyncStorage.setItem('@user_token', result.accessToken);
-        
+      if (result && result.accessToken) {
+        await simpanToken(result.accessToken);
         router.replace({ pathname: '/(tabs)', params: { role: 'guru' } });
       } else {
-        alert("Login Gagal: " + result.message);
+        Alert.alert("Login Gagal", "Data tidak ditemukan atau format salah.");
       }
     } catch (e) {
-      console.log("Error Login:", e);
-      await AsyncStorage.setItem('@user_token', 'token_dummy_123');
-      router.replace({ pathname: '/(tabs)', params: { role: 'guru' } });
+      console.log("Error Login:", e.message);
+      Alert.alert("Kesalahan Sistem", "Gagal menghubungi server.");
     }
   };
 
@@ -52,7 +42,13 @@ export default function LoginGuru() {
         />
 
         <Text style={styles.label}>Password</Text>
-        <TextInput style={styles.input} placeholder="Masukkan password" secureTextEntry />
+        <TextInput 
+          style={styles.input} 
+          placeholder="Masukkan password" 
+          secureTextEntry 
+          value={password}
+          onChangeText={setPassword}
+        />
 
         <TouchableOpacity style={styles.btn} onPress={handleLogin}>
           <Text style={styles.btnText}>Login</Text>
@@ -65,6 +61,8 @@ export default function LoginGuru() {
     </View>
   );
 }
+
+// ... styles tetap sama
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', padding: 20, backgroundColor: '#f5f5f5' },
